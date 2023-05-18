@@ -14,7 +14,7 @@ class DanaDaruratModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['bulan', 'pengeluaran_tetap', 'pengeluaran_tambahan', 'dana_darurat'];
+    protected $allowedFields    = ['bulan', 'pengeluaran_tetap', 'pengeluaran_tambahan', 'dana_darurat', 'status'];
 
     // Dates
     protected $useTimestamps = false;
@@ -40,12 +40,12 @@ class DanaDaruratModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getDetail($bulan = false)
+    public function getDetail($id = false)
     {
-        if ($bulan == false){
+        if ($id == false){
             return $this->findAll();
         }
 
-        return $this->where(['bulan'=>$bulan])->first();
+        return $this->where(['id'=>$id])->first();
     }
 }

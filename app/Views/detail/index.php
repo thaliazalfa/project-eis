@@ -14,14 +14,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
                 <a href="/pages/home" class="nav-item nav-link">Home</a>
-                <a href="/pages/history" class="nav-item nav-link active">History</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Service</a>
-                    <div class="dropdown-menu m-0">
-                        <a href="/pages/dana-darurat/index" class="dropdown-item">Dana Darurat</a>
-                        <a href="/assets/quote.html" class="dropdown-item">Perencanaan Bulanan</a>
-                    </div>
-                </div>
+                <a href="/pages/history" class="nav-item nav-link active">History</a> 
             </div>
             <a href="" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">Login</a>
         </div>
@@ -52,6 +45,8 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.3s">
                         <form>
+                        <?php foreach ($detail as $entity): ?>
+                            <?php endforeach ?>
                             <div class="row g-3">
                                 <div class="col-12">
                                     <div class="form-floating">
@@ -60,22 +55,22 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <p> <b> Bulan : </b><i><?= $detail['bulan']; ?></i>  </p>
+                                        <p> <b> Bulan : </b><i><?= $entity['bulan']; ?></i>  </p>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <p><b>Pengeluaran tetap perbulan : </b><?= $detail['pengeluaran_tetap']; ?></p>
+                                        <p><b>Pengeluaran tetap perbulan : </b><?= $entity['pengeluaran_tetap']; ?></p>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <p><b>Pengeluaran tambahan perbulan : </b><?= $detail['pengeluaran_tambahan']; ?></p>
+                                        <p><b>Pengeluaran tambahan perbulan : </b><?= $entity['pengeluaran_tambahan']; ?></p>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <p><b>Dana Darurat yang dibutuhkan minimal : </b><?= $detail['dana_darurat']; ?></p>
+                                        <p><b>Dana Darurat yang dibutuhkan minimal : </b><?= $entity['dana_darurat']; ?></p>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -92,14 +87,13 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                <div class="row justify-content-center"> 
-                                    <button class="btn btn-warning w-25" type="submit">Edit</button>
-                                    <button class="btn btn-danger w-25" type="submit">Ulang</button>
-                                    <br>
-                                    <button class="btn btn-success w-75 py-3 mt-3">Kembali ke history</button>
+                                <div class="row justify-content-center">
+                                    <br>  
+                                    <a href="/pages/history" class="btn btn-success w-25 mb-3">Kembali</a>
                                 </div>
                                 </div>
                             </div>
+                            
                         </form>
                     </div>
                 </div>

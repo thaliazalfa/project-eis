@@ -1,115 +1,202 @@
 <?php
 
 namespace App\Controllers;
-
-use CodeIgniter\RESTful\ResourceController;
 use App\Models\DanaDaruratModel;
 
-class DanaDarurat extends ResourceController
+
+class DanaDarurat extends BaseController
 {
+    //Deklarasi function construct
     public function __construct(){
         $this->danaDaruratModel = new DanaDaruratModel();
     }
 
-    /**
-     * Return an array of resource objects, themselves in array format
-     *
-     * @return mixed
-     */
+
+    //Method Index()
     public function index()
     {
-        
-        $dana_darurat = $this->danaDaruratModel->findAll();
+        //$dana_darurat = $this->danaDaruratModel->findAll();
 
-        $payload = [
-            "dana_darurat" => $dana_darurat
+        $data = [
+            "dana_darurat" => $this->danaDaruratModel->getDetail()
         ];
 
-        echo view('/pages/dana-darurat/history', $payload);
+        echo view('/pages/history', $data);
     }
 
-    /**
-     * Return the properties of a resource object
-     *
-     * @return mixed
-     */
-    public function show($id = null)
-    {
-        //
-    }
-
-    /**
-     * Return a new resource object, with default properties
-     *
-     * @return mixed
-     */
-    public function new()
-    {
-        echo view('pages/dana-darurat/new');
-    }
-
-    /**
-     * Create a new resource object, from "posted" parameters
-     *
-     * @return mixed
-     */
+    
+    //Method create
     public function create()
     {
-        $payload = [
-            "bulan" => $this->request->getPost('bulan'),
-            "pengeluaran_tetap" => (int) $this->request->getPost('pengeluaran_tetap'),
-            "pengeluaran_tambahan" => (int) $this->request->getPost('pengeluaran_tambahan'),
-            "dana_darurat" => (int) $this->request->getPost('dana_darurat'),
+        //$session = \Config\Services::session();
+        session();
+        $data = [
+            'validation' => \Config\Services::validation()
         ];
-
-
-        $this->danaDaruratModel->insert($payload);
-        return redirect()->to('pages/dana-darurat/');
+        return view ('/pages/new', $data);
     }
+    
 
-    /**
-     * Return the editable properties of a resource object
-     *
-     * @return mixed
-     */
-    public function edit($id = null)
+
+    //Method save()
+    public function save()
     {
-        $emergency_fund = $this->danaDaruratModel->find($id);
         
-        if (!$emergency_fund) {
-            throw new \Exception("Data not found!");   
-        }
+        //validasi input
         
-        echo view('/pages/dana-darurat/edit', ["data" => $emergency_fund]);
-    }
+        if(!$this->validate([
+            'pengeluaran_tetap' => [
+                'rules' => 'required|numeric|greater_than[0]',
+                'errors'=> [
+                    'required' => '{field} pengeluaran tetap harus diisi.',
+                    'numeric' => '{field} input harus angka.',
+                    'greater_than[0]' => '{field} input harus lebih besar dari 0'
+                ],
+            ],
+            'pengeluaran_tambahan' => [
+                'rules' => 'required|numeric',
+                'errors'=> [
+                    'required' => '{field} pengeluaran tetap harus diisi.',
+                    'numeric' => '{field} input harus angka.'
+                    ]
+            ]
+            ])){
+                $validation = \Config\Services::validation();
+                        
+                    return redirect()->to('/pages/new')->withInput()->with('validation', $validation);
+                }
+                    
+
+        //hitung dana darurat
+        
+        $pengeluaran_tetap = (int) $this->request->getPost('pengeluaran_tetap');
+        $pengeluaran_tambahan = (int) $this->request->getPost('pengeluaran_tambahan');
+        $status = $this->request->getPost('status');
+        $dana_darurat = '';
+                    
+        switch ($status){
+            case $status == 'Lajang' :
+                $dana_darurat = ($pengeluaran_tetap+$pengeluaran_tambahan)*3;
+                break;
+            case $status == 'Menikah' :
+                $dana_darurat = ($pengeluaran_tetap+$pengeluaran_tambahan)*4;
+                break;
+            case $status == 'Menikah dan Punya Anak' :
+                $dana_darurat = ($pengeluaran_tetap+$pengeluaran_tambahan)*6;
+                break;
+                }
+        
+        //Insert atau simpan input dan hasil hitungan ke database        
+        $this->danaDaruratModel->save([
+            'pengeluaran_tetap' => (int) $this->request->getVar('pengeluaran_tetap'),
+            'pengeluaran_tambahan' => (int) $this->request->getVar('pengeluaran_tambahan'),
+            'bulan' => $this->request->getVar('bulan'),
+            'status' => $this->request->getVar('status'),
+            'dana_darurat' => $dana_darurat,
+            ]);
+                
+                session()->setFlashdata('message', 'Data berhasil ditambahkan.');
+                return redirect()->to('/pages/history'); 
+            }
 
 
-    /**
-     * Add or update a model resource, from "posted" properties
-     *
-     * @return mixed
-     */
-    public function update($id = null)
+
+    //Method detail()
+    public function detail()
     {
-        $payload = [
-            "bulan" => $this->request->getPost('bulan'),
-            "pengeluaran_tetap" => (int) $this->request->getPost('pengeluaran_tetap'),
-            "pengeluaran_tambahan" => (int) $this->request->getPost('pengeluaran_tambahan'),
-            "dana_darurat" => (int) $this->request->getPost('dana_darurat'),
-        ];
+        $detail = $this->danaDaruratModel->findAll();
+        $data = [
+                "detail" => $detail
+                ];
 
-        $this->danaDaruratModel->update($id, $payload);
-        return redirect()->to('pages/dana-darurat/');
+        //jika data tidak ada di tabel
+        if(empty($data['detail'])){
+                throw new \CodeIgniter\Exceptions\PageNotFoundException('Data tidak ditemukan');
+            }
+             return view ('/detail/index', $data);
     }
 
-    /**
-     * Delete the designated resource object from the model
-     *
-     * @return mixed
-     */
-    public function delete($id = null)
+
+    //Method delete()
+    public function delete($id)
     {
         $this->danaDaruratModel->delete($id);
-        return redirect()->to('pages/dana-darurat/');
+        session()->setFlashdata('message', 'Data berhasil dihapus');
+        return redirect()->to('/pages/history');
+    }
+
+
+    //Method edit()
+    public function edit($id)
+    {
+        //$session = \Config\Services::session();
+        session();
+        $data = [
+                    'validation' => \Config\Services::validation(),
+                    'detail' => $this->danaDaruratModel->getDetail($id)
+                ];
+        return view ('/pages/edit', $data);
+    }
+
+
+    //Method update()
+    public function update($id)
+    {
+
+        //Validasi input
+        if(!$this->validate([
+            'pengeluaran_tetap' => [
+                    'rules' => 'required|numeric|greater_than[0]',
+                    'errors'=> [
+                        'required' => '{field} pengeluaran tetap harus diisi.',
+                        'numeric' => '{field} input harus angka.',
+                        'greater_than[0]' => '{field} input harus lebih besar dari 0'
+                    ],
+            ],
+            'pengeluaran_tambahan' => [
+                    'rules' => 'required|numeric',
+                    'errors'=> [
+                        'required' => '{field} pengeluaran tetap harus diisi.',
+                        'numeric' => '{field} input harus angka.'
+                    ]
+            ]
+        ])){
+                $validation = \Config\Services::validation();
+                return redirect()->to('/pages/edit/' . $this->request->getVar('id'))->withInput()->with('validation', $validation);
+            }
+                            
+
+        //hitung dana darurat
+        $pengeluaran_tetap = (int) $this->request->getPost('pengeluaran_tetap');
+        $pengeluaran_tambahan = (int) $this->request->getPost('pengeluaran_tambahan');
+        $status = $this->request->getPost('status');
+        $dana_darurat = '';
+                            
+        switch ($status){
+            case $status == 'Lajang' :
+                $dana_darurat = ($pengeluaran_tetap+$pengeluaran_tambahan)*3;
+                break;
+            case $status == 'Menikah' :
+                $dana_darurat = ($pengeluaran_tetap+$pengeluaran_tambahan)*4;
+                break;
+            case $status == 'Menikah dan Punya Anak' :
+                $dana_darurat = ($pengeluaran_tetap+$pengeluaran_tambahan)*6;
+                break;
+        }
+        
+        //Inisialisasi variabel yang sudah diubah
+        $detail = [
+            'pengeluaran_tetap' => (int) $this->request->getVar('pengeluaran_tetap'),
+            'pengeluaran_tambahan' => (int) $this->request->getVar('pengeluaran_tambahan'),
+            'bulan' => $this->request->getVar('bulan'),
+            'status' => $this->request->getVar('status'),
+            'dana_darurat' => $dana_darurat
+        ];
+
+        //Kirim data dan flash message ke view history 
+        $this->danaDaruratModel->update($id, $detail);
+        session()->setFlashdata('message', 'Data berhasil diubah.');
+        return redirect()->to('/pages/history');
     }
 }
+        

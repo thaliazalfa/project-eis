@@ -5,7 +5,7 @@
 <!-- Navbar & Hero Start -->
 <div class="container-xxl position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-                <a href="index.html" class="navbar-brand p-0">
+                <a href="#" class="navbar-brand p-0">
                     <h1 class="m-0">MonPlanner</h1>
                     <!-- <img src="img/logo.png" alt="Logo"> -->
                 </a>
@@ -16,13 +16,6 @@
                     <div class="navbar-nav ms-auto py-0">
                         <a href="/pages/home" class="nav-item nav-link active">Home</a>
                         <a href="/pages/history" class="nav-item nav-link">History</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Service</a>
-                            <div class="dropdown-menu m-0">
-                                <a href="/pages/dana-darurat/index" class="dropdown-item">Dana Darurat</a>
-                                <a href="/assets/quote.html" class="dropdown-item">Perencanaan Bulanan</a>
-                            </div>
-                        </div>
                     </div>
                     <a href="" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">Login</a>
                 </div>
@@ -62,20 +55,11 @@
                         <div class="row g-3 mb-4">
                             <div class="col-12 d-flex">
                                 <div class="flex-shrink-0 btn-lg-square rounded-circle bg-primary">
-                                    <i class="fa fa-user-tie text-white"></i>
+                                    <i class="fa fa-chart-line text-white"></i>
                                 </div>
                                 <div class="ms-4">
                                     <h6>Dana Darurat</h6>
                                     <span>sejumlah uang yang kita siapkan untuk mengantisipasi situasi darurat seperti sakit, kecelakaan, bencana alam, kena PHK, dan masih banyak lagi.</span>
-                                </div>
-                            </div>
-                            <div class="col-12 d-flex">
-                                <div class="flex-shrink-0 btn-lg-square rounded-circle bg-primary">
-                                    <i class="fa fa-chart-line text-white"></i>
-                                </div>
-                                <div class="ms-4">
-                                    <h6>Perencanaan Bulanan</h6>
-                                    <span>proses untuk mencapai tujuan hidup seseorang melalui pengelolaan keuangan secara terencana.</span>
                                 </div>
                             </div>
                         </div>

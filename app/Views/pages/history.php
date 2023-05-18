@@ -15,43 +15,43 @@
                     <div class="navbar-nav ms-auto py-0">
                         <a href="/pages/home" class="nav-item nav-link">Home</a>
                         <a href="/pages/history" class="nav-item nav-link active">History</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Service</a>
-                            <div class="dropdown-menu m-0">
-                                <a href="/pages/index" class="dropdown-item">Dana Darurat</a>
-                            </div>
-                        </div>
                     </div>
                     <a href="" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">Login</a>
                 </div>
             </nav>
-<div class="container-xxl bg-primary page-header">
-    <div class="container text-center">
-        <h1 class="text-white animated zoomIn mb-3">History User</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb justify-content-center">
-                    <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
-                    <li class="breadcrumb-item text-white active" aria-current="page">About</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-</div>
+            <div class="container-xxl bg-primary page-header">
+                <div class="container text-center">
+                    <h1 class="text-white animated zoomIn mb-3">History User</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                                <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
+                                <li class="breadcrumb-item text-white active" aria-current="page">History</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
 
  <!-- About Start -->
  <div class="container-xxl py-6">
             <div class="container">
                 <a href="/pages/new" class="btn btn-primary mb-3">Tambah Data Pengeluaran</a>
+                <?php if(session()->getFlashdata('message')) :?>
+                    <div class="alert alert-success" role="alert">
+                     <?= session()->getFlashdata('message'); ?>
+                    </div>
+                <?php endif ;?>
                 <table class="table table-hover ">
                     <thead>
                         <tr>
                             <th scope="col ">ID</th>
                             <th scope="col ">Bulan</th>
+                            <th scope="col ">Status</th>
                             <th scope="col ">Pengeluaran Tetap</th>
                             <th scope="col ">Pengeluaran Tambahan</th>
                             <th scope="col ">Dana Darurat</th>
-                            <th scope="col ">Action</th>
+                            <th scope="col "></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,11 +60,18 @@
                     <tr>
                         <td><?= $no += 1; ?></td>
                         <td><?= $item['bulan'] ?></td>
+                        <td><?= $item['status'] ?></td>
                         <td><?= $item['pengeluaran_tetap'] ?></td>
                         <td><?= $item['pengeluaran_tambahan'] ?></td>
                         <td><?= $item['dana_darurat'] ?></td>
                         <td>
-                            <a href="/detail/<?= $item['bulan']; ?>" class="btn btn-success">Detail</a>
+                            <a href="/detail/<?= $item['id']; ?>" class="btn btn-success">Detail</a>
+                            <a href="/pages/edit/<?= $item['id']; ?>" class="btn btn-warning " type="submit">Edit</a>
+                            <form action="/detail/delete/<?= $item['id']; ?>" method="post" class="d-inline">
+                                    <?= csrf_field(); ?>
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('apakah anda yakin ingin menghapus?');">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     <?php endforeach ?>

@@ -29,23 +29,18 @@ $routes->set404Override();
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
-//$routes->get('coba', 'Coba::index');
-$routes->get('coba/about', 'Coba::about');
-$routes->get('/coba/(:any)/(:num)', 'Coba::about/$1/$2');
 
-$routes->get('/users', 'Admin\Users::index');
-$routes->get('/catalog', 'Admin\Catalog::index');
-
-//$routes->get('/pages', 'DanaDarurat::index');
 $routes->get('/pages/home', 'Pages::index');
-//$routes->get('pages/about', 'Pages::about');
-$routes->resource('danadarurat');
 
-$routes->get('pages/history', 'Coba::index');
-$routes->get('pages/new', 'Coba::create');
-$routes->get('detail/(:segment)', 'Coba::detail/$1');
-$routes->post('coba', 'Coba::save');
+
+$routes->get('pages/history', 'DanaDarurat::index');
+$routes->get('pages/new', 'DanaDarurat::create');
+$routes->delete('detail/delete/(:num)', 'DanaDarurat::delete/$1');
+$routes->get('detail/(:any)', 'DanaDarurat::detail/$1');
+$routes->get('pages/edit/(:segment)', 'DanaDarurat::edit/$1');
+
+$routes->post('danadarurat', 'DanaDarurat::save');
+$routes->post('update/(:num)', 'DanaDarurat::update/$1');
 
 /*
  * --------------------------------------------------------------------
